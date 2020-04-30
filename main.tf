@@ -1,6 +1,5 @@
 terraform {
   required_version = "0.12.24" # see https://releases.hashicorp.com/terraform/
-  experiments      = [variable_validation]
 }
 
 provider "google" {
@@ -8,8 +7,8 @@ provider "google" {
 }
 
 locals {
-  instance_name = format("%s-vm-%s", var.name, var.tf_env)
-  tags          = toset(concat(var.tags, [var.tf_env]))
+  instance_name = format("%s-vm-%s", var.name, var.name_suffix)
+  tags          = toset(concat(var.tags, [var.name_suffix]))
 }
 
 resource "google_project_service" "compute_api" {

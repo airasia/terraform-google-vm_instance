@@ -1,10 +1,10 @@
 terraform {
-  required_version = "0.12.24" # see https://releases.hashicorp.com/terraform/
+  required_version = ">= 0.12.24" # see https://releases.hashicorp.com/terraform/
   experiments      = [variable_validation]
 }
 
 provider "google" {
-  version = "3.13.0" # see https://github.com/terraform-providers/terraform-provider-google/releases
+  version = ">= 3.13.0" # see https://github.com/terraform-providers/terraform-provider-google/releases
 }
 
 locals {

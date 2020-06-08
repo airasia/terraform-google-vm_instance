@@ -9,6 +9,7 @@ provider "google" {
 
 locals {
   instance_name = format("%s-vm-%s", var.name, var.name_suffix)
+  static_ip     = var.static_ip == "" ? null : var.static_ip
   tags          = toset(concat(var.tags, [var.name_suffix]))
 }
 
@@ -29,7 +30,7 @@ resource "google_compute_instance" "vm_instance" {
   }
   network_interface {
     subnetwork = var.vpc_subnetwork
-    access_config { nat_ip = var.static_ip }
+    access_config { nat_ip = local.static_ip }
   }
   metadata = {
     enable-oslogin = (var.os_login_enabled ? "TRUE" : "FALSE") # see https://cloud.google.com/compute/docs/instances/managing-instance-access#enable_oslogin

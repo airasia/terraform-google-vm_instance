@@ -55,7 +55,7 @@ variable "tags" {
 variable "static_ip" {
   description = "A static IP address to attach to the VM instance. An ephemeral IP address will be attached if nothing is specified here."
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "os_login_enabled" {

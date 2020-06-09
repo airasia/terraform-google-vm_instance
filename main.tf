@@ -7,10 +7,13 @@ provider "google" {
   version = ">= 3.13.0" # see https://github.com/terraform-providers/terraform-provider-google/releases
 }
 
+data "google_client_config" "google_client" {}
+
 locals {
   instance_name = format("%s-vm-%s", var.name, var.name_suffix)
   static_ip     = var.static_ip == "" ? null : var.static_ip
   tags          = toset(concat(var.tags, [var.name_suffix]))
+  zone          = "${data.google_client_config.google_client.region}-${var.zone}"
 }
 
 resource "google_project_service" "compute_api" {
@@ -21,7 +24,7 @@ resource "google_project_service" "compute_api" {
 resource "google_compute_instance" "vm_instance" {
   name         = local.instance_name
   machine_type = var.machine_type
-  zone         = var.zone
+  zone         = local.zone
   tags         = local.tags
   boot_disk {
     initialize_params {

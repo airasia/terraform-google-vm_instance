@@ -26,11 +26,6 @@ variable "vpc_subnetwork" {
   type        = string
 }
 
-variable "zone" {
-  description = "The GCloud zone to launch the VM instance in. See https://cloud.google.com/compute/docs/regions-zones."
-  type        = string
-}
-
 variable "service_account_email" {
   description = "Email of the ServiceAccount that will grant specific IAM roles to the VM instance."
   type        = string
@@ -44,6 +39,12 @@ variable "machine_type" {
   description = "The type of VM instance for each nodes. See https://cloud.google.com/compute/docs/machine-types"
   type        = string
   default     = "f1-micro"
+}
+
+variable "zone" {
+  description = "The GCloud zone-letter to launch the VM instance in. Options are \"a\" or \"b\" or \"c\" or \"d\". Defaults to \"a\" zone of the Google provider's region if nothing is specified here. See https://cloud.google.com/compute/docs/regions-zones."
+  type        = string
+  default     = "a"
 }
 
 variable "tags" {

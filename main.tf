@@ -33,7 +33,13 @@ resource "google_compute_instance" "vm_instance" {
   }
   network_interface {
     subnetwork = var.vpc_subnetwork
-    access_config { nat_ip = local.static_ip }
+    dynamic "access_config" {
+      # Set 'access_config' block only if 'static_ip' is provided
+      for_each = local.static_ip == null ? [] : [1]
+      content {
+        nat_ip = local.static_ip
+      }
+    }
   }
   metadata = {
     enable-oslogin = (var.os_login_enabled ? "TRUE" : "FALSE") # see https://cloud.google.com/compute/docs/instances/managing-instance-access#enable_oslogin

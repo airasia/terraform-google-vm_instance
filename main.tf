@@ -44,5 +44,5 @@ resource "google_compute_instance" "vm_instance" {
     scopes = ["cloud-platform"]
   }
   allow_stopping_for_update = var.allow_stopping_for_update
-  depends_on                = [var.module_depends_on, google_project_service.compute_api]
+  depends_on                = [google_project_service.compute_api]
 }

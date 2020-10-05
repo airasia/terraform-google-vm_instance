@@ -23,6 +23,8 @@ resource "google_compute_instance" "vm_instance" {
   tags         = local.tags
   boot_disk {
     initialize_params {
+      size  = var.boot_disk_size
+      type  = var.boot_disk_type
       image = var.boot_disk_image_source
     }
   }

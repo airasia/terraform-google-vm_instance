@@ -72,7 +72,7 @@ variable "allow_stopping_for_update" {
 }
 
 variable "boot_disk_size" {
-  description = "The size of the image in gigabytes."
+  description = "The size of the boot disk in GigaBytes. Must be at least the size of the boot disk image."
   type        = number
   default     = 10
 }

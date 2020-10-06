@@ -70,3 +70,15 @@ variable "allow_stopping_for_update" {
   type        = bool
   default     = true
 }
+
+variable "boot_disk_size" {
+  description = "The size of the image in gigabytes."
+  type        = number
+  default     = 10
+}
+
+variable "boot_disk_type" {
+  description = "The GCE disk type. May be set to pd-standard, pd-balanced or pd-ssd"
+  type        = string
+  default     = "pd-standard"
+}

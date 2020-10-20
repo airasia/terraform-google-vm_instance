@@ -15,6 +15,7 @@ locals {
     "roles/monitoring.metricWriter",
     "roles/stackdriver.resourceMetadata.writer"
   ]
+  sa_name  = var.sa_name == "" ? var.instance_name : var.sa_name
   sa_roles = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
   create_new_sa = var.sa_email == "" ? true : false
   vm_sa_email   = local.create_new_sa ? module.service_account.0.email : var.sa_email
@@ -30,8 +31,8 @@ module "service_account" {
   source       = "airasia/service_account/google"
   version      = "2.0.0"
   name_suffix  = var.name_suffix
-  name         = var.sa_name
-  display_name = var.sa_name
+  name         = local.sa_name
+  display_name = local.sa_name
   description  = var.sa_description
   roles        = local.sa_roles
 }

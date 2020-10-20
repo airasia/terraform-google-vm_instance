@@ -79,9 +79,9 @@ variable "boot_disk_type" {
 }
 
 variable "sa_name" {
-  description = "An arbitrary name to identify the ServiceAccount that will be generated & attached to the VM instance. Gets disregarded if \"var.sa_email\" is specified."
+  description = "An arbitrary name to identify the ServiceAccount that will be generated & attached to the VM instance. Uses \"var.instance_name\" if nothing is specified. Gets disregarded if \"var.sa_email\" is specified."
   type        = string
-  default     = "vm"
+  default     = ""
 }
 
 variable "sa_description" {

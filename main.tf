@@ -6,7 +6,7 @@ data "google_client_config" "google_client" {}
 
 locals {
   instance_name = format("%s-vm-%s", var.instance_name, var.name_suffix)
-  static_ip     = var.static_ip == "" ? null : var.static_ip
+  external_ip   = var.external_ip == "" ? null : var.external_ip
   tags          = toset(concat(var.tags, [var.name_suffix]))
   zone          = "${data.google_client_config.google_client.region}-${var.zone}"
   pre_defined_sa_roles = [
@@ -52,10 +52,10 @@ resource "google_compute_instance" "vm_instance" {
   network_interface {
     subnetwork = var.vpc_subnetwork
     dynamic "access_config" {
-      # Set 'access_config' block only if 'static_ip' is provided
-      for_each = local.static_ip == null ? [] : [1]
+      # Set 'access_config' block only if 'external_ip' is provided
+      for_each = local.external_ip == null ? [] : [1]
       content {
-        nat_ip = local.static_ip
+        nat_ip = local.external_ip
       }
     }
   }

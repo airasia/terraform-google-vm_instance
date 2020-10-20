@@ -48,8 +48,8 @@ variable "tags" {
   default     = []
 }
 
-variable "static_ip" {
-  description = "A static IP address to attach to the VM instance. An ephemeral IP address will be attached if nothing is specified here."
+variable "external_ip" {
+  description = "An external IP to be attached to the VM instance. VM is publicly unreachable if nothing is specified here."
   type        = string
   default     = ""
 }

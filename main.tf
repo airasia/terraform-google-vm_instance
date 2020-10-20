@@ -9,11 +9,28 @@ locals {
   static_ip     = var.static_ip == "" ? null : var.static_ip
   tags          = toset(concat(var.tags, [var.name_suffix]))
   zone          = "${data.google_client_config.google_client.region}-${var.zone}"
+  pre_defined_sa_roles = [
+    # enable the VM instance to write logs and metrics
+    "roles/logging.logWriter",
+    "roles/monitoring.metricWriter",
+    "roles/stackdriver.resourceMetadata.writer"
+  ]
+  sa_roles = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
 }
 
 resource "google_project_service" "compute_api" {
   service            = "compute.googleapis.com"
   disable_on_destroy = false
+}
+
+module "service_account" {
+  source       = "airasia/service_account/google"
+  version      = "2.0.0"
+  name_suffix  = var.name_suffix
+  name         = var.sa_name
+  display_name = var.sa_name
+  description  = var.sa_description
+  roles        = local.sa_roles
 }
 
 resource "google_compute_instance" "vm_instance" {
@@ -42,7 +59,7 @@ resource "google_compute_instance" "vm_instance" {
     enable-oslogin = (var.os_login_enabled ? "TRUE" : "FALSE") # see https://cloud.google.com/compute/docs/instances/managing-instance-access#enable_oslogin
   }
   service_account {
-    email  = var.service_account_email
+    email  = module.service_account.email
     scopes = ["cloud-platform"]
   }
   allow_stopping_for_update = var.allow_stopping_for_update

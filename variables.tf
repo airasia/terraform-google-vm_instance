@@ -26,11 +26,6 @@ variable "vpc_subnetwork" {
   type        = string
 }
 
-variable "service_account_email" {
-  description = "Email of the ServiceAccount that will grant specific IAM roles to the VM instance."
-  type        = string
-}
-
 # ----------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # ----------------------------------------------------------------------------------------------------------------------
@@ -81,4 +76,22 @@ variable "boot_disk_type" {
   description = "The GCE disk type. May be set to \"pd-standard\", \"pd-balanced\" or \"pd-ssd\"."
   type        = string
   default     = "pd-standard"
+}
+
+variable "sa_name" {
+  description = "An arbitrary name to identify the ServiceAccount that will be generated & attached to the VM instance."
+  type        = string
+  default     = "vm"
+}
+
+variable "sa_description" {
+  description = "An arbitrary description for the ServiceAccount that will be generated & attached to the VM instance."
+  type        = string
+  default     = "Manages permissions available to the VM instance."
+}
+
+variable "sa_roles" {
+  description = "IAM roles to be granted to the ServiceAccount which is generated & attached to the VM instance."
+  type        = list(string)
+  default     = []
 }

@@ -5,7 +5,7 @@ terraform {
 data "google_client_config" "google_client" {}
 
 locals {
-  instance_name = format("%s-vm-%s", var.name, var.name_suffix)
+  instance_name = format("%s-vm-%s", var.instance_name, var.name_suffix)
   static_ip     = var.static_ip == "" ? null : var.static_ip
   tags          = toset(concat(var.tags, [var.name_suffix]))
   zone          = "${data.google_client_config.google_client.region}-${var.zone}"

@@ -11,7 +11,7 @@ variable "name_suffix" {
   }
 }
 
-variable "name" {
+variable "instance_name" {
   description = "A name to identify the VM instance."
   type        = string
 }

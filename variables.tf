@@ -79,19 +79,25 @@ variable "boot_disk_type" {
 }
 
 variable "sa_name" {
-  description = "An arbitrary name to identify the ServiceAccount that will be generated & attached to the VM instance."
+  description = "An arbitrary name to identify the ServiceAccount that will be generated & attached to the VM instance. Gets disregarded if \"var.sa_email\" is specified."
   type        = string
   default     = "vm"
 }
 
 variable "sa_description" {
-  description = "An arbitrary description for the ServiceAccount that will be generated & attached to the VM instance."
+  description = "An arbitrary description for the ServiceAccount that will be generated & attached to the VM instance. Gets disregarded if \"var.sa_email\" is specified."
   type        = string
   default     = "Manages permissions available to the VM instance."
 }
 
 variable "sa_roles" {
-  description = "IAM roles to be granted to the ServiceAccount which is generated & attached to the VM instance."
+  description = "IAM roles to be granted to the ServiceAccount which is generated & attached to the VM instance. Gets disregarded if \"var.sa_email\" is specified."
   type        = list(string)
   default     = []
+}
+
+variable "sa_email" {
+  description = "Email address of another ServiceAccount that will be attached to the VM instance. If specified, it disregards \"var.sa_name\", \"var.sa_description\", \"var.sa_roles\"."
+  type        = string
+  default     = ""
 }

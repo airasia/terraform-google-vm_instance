@@ -16,6 +16,8 @@ locals {
     "roles/stackdriver.resourceMetadata.writer"
   ]
   sa_roles = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
+  create_new_sa = var.sa_email == "" ? true : false
+  vm_sa_email   = local.create_new_sa ? module.service_account.0.email : var.sa_email
 }
 
 resource "google_project_service" "compute_api" {
@@ -24,6 +26,7 @@ resource "google_project_service" "compute_api" {
 }
 
 module "service_account" {
+  count        = local.create_new_sa ? 1 : 0
   source       = "airasia/service_account/google"
   version      = "2.0.0"
   name_suffix  = var.name_suffix
@@ -59,7 +62,7 @@ resource "google_compute_instance" "vm_instance" {
     enable-oslogin = (var.os_login_enabled ? "TRUE" : "FALSE") # see https://cloud.google.com/compute/docs/instances/managing-instance-access#enable_oslogin
   }
   service_account {
-    email  = module.service_account.email
+    email  = local.vm_sa_email
     scopes = ["cloud-platform"]
   }
   allow_stopping_for_update = var.allow_stopping_for_update

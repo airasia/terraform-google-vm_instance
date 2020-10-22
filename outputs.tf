@@ -27,3 +27,8 @@ output "instance_id" {
   description = "The server-assigned unique identifier of this instance."
   value       = google_compute_instance.vm_instance.instance_id
 }
+
+output "instance_name" {
+  description = "The generated name of the GCloud VM Instance"
+  value       = local.instance_name
+}

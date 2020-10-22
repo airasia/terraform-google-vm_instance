@@ -71,6 +71,7 @@ resource "google_compute_instance" "vm_instance" {
   depends_on                = [google_project_service.compute_api]
   lifecycle {
     ignore_changes = [
+      attached_disks,
       metadata["windows-keys"],
     ]
   }

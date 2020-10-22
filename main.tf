@@ -29,7 +29,7 @@ resource "google_project_service" "compute_api" {
 module "service_account" {
   count        = local.create_new_sa ? 1 : 0
   source       = "airasia/service_account/google"
-  version      = "2.0.0"
+  version      = "2.0.1"
   name_suffix  = var.name_suffix
   name         = local.sa_name
   display_name = local.sa_name

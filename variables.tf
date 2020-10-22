@@ -11,7 +11,7 @@ variable "name_suffix" {
   }
 }
 
-variable "name" {
+variable "instance_name" {
   description = "A name to identify the VM instance."
   type        = string
 }
@@ -23,11 +23,6 @@ variable "boot_disk_image_source" {
 
 variable "vpc_subnetwork" {
   description = "A reference (self link) to the VPC subnet to host the VM instance in."
-  type        = string
-}
-
-variable "service_account_email" {
-  description = "Email of the ServiceAccount that will grant specific IAM roles to the VM instance."
   type        = string
 }
 
@@ -53,8 +48,8 @@ variable "tags" {
   default     = []
 }
 
-variable "static_ip" {
-  description = "A static IP address to attach to the VM instance. An ephemeral IP address will be attached if nothing is specified here."
+variable "external_ip" {
+  description = "An external IP to be attached to the VM instance. VM is publicly unreachable if nothing is specified here."
   type        = string
   default     = ""
 }
@@ -72,13 +67,43 @@ variable "allow_stopping_for_update" {
 }
 
 variable "boot_disk_size" {
-  description = "The size of the image in gigabytes."
+  description = "The size of the boot disk in GigaBytes. Must be at least the size of the boot disk image."
   type        = number
   default     = 10
 }
 
 variable "boot_disk_type" {
-  description = "The GCE disk type. May be set to pd-standard, pd-balanced or pd-ssd"
+  description = "The GCE disk type. May be set to \"pd-standard\", \"pd-balanced\" or \"pd-ssd\"."
   type        = string
   default     = "pd-standard"
+}
+
+variable "sa_name" {
+  description = "An arbitrary name to identify the ServiceAccount that will be generated & attached to the VM instance. Uses \"var.instance_name\" if nothing is specified. Gets disregarded if \"var.sa_email\" is specified."
+  type        = string
+  default     = ""
+}
+
+variable "sa_description" {
+  description = "An arbitrary description for the ServiceAccount that will be generated & attached to the VM instance. Gets disregarded if \"var.sa_email\" is specified."
+  type        = string
+  default     = "Manages permissions available to the VM instance."
+}
+
+variable "sa_roles" {
+  description = "IAM roles to be granted to the ServiceAccount which is generated & attached to the VM instance. Gets disregarded if \"var.sa_email\" is specified."
+  type        = list(string)
+  default     = []
+}
+
+variable "sa_email" {
+  description = "Email address of another ServiceAccount that will be attached to the VM instance. If specified, it disregards \"var.sa_name\", \"var.sa_description\", \"var.sa_roles\"."
+  type        = string
+  default     = ""
+}
+
+variable "user_groups" {
+  description = "List of usergroup emails that maybe allowed access to login to the VM instance. For example: SSH login via CLoudSHell."
+  type        = list(string)
+  default     = []
 }

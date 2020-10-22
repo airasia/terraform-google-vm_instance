@@ -19,16 +19,16 @@ output "self_link" {
 }
 
 output "id" {
-  description = "an identifier for the resource with format projects/{{project}}/zones/{{zone}}/instances/{{name}}"
+  description = "An identifier for the resource with format projects/{{project}}/zones/{{zone}}/instances/{{name}}"
   value       = google_compute_instance.vm_instance.id
 }
 
 output "instance_id" {
-  description = "The server-assigned unique identifier of this instance."
+  description = "The server-assigned 19 digits unique identifier of this instance. Example: 4567719474035761998"
   value       = google_compute_instance.vm_instance.instance_id
 }
 
 output "instance_name" {
-  description = "The generated name of the GCloud VM Instance"
+  description = "The generated name of the GCloud VM Instance with format {{instance-name}}-vm-{{suffix with 4 characters random string separated with -}}. Example: vm-instance-tf-1a2b"
   value       = local.instance_name
 }

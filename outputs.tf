@@ -9,8 +9,14 @@ output "sa_email" {
 }
 
 output "sa_roles" {
-  description = "All roles (except sensitive roles filtered by the module) that are attached to the ServiceAccount of this VM."
-  value       = module.service_account.roles
+  description = "All roles (except sensitive roles filtered by the module) that are attached to the ServiceAccount generated for this VM."
+  value = (
+    local.create_new_sa == true
+    ?
+    module.service_account.0.roles
+    :
+    ["No new ServiceAccount was generated for this VM. See roles attached to the ServiceAccount '${local.vm_sa_email}' instead."]
+  )
 }
 
 output "self_link" {
@@ -19,11 +25,16 @@ output "self_link" {
 }
 
 output "id" {
-  description = "an identifier for the resource with format projects/{{project}}/zones/{{zone}}/instances/{{name}}"
+  description = "An identifier for the resource with format projects/{{project}}/zones/{{zone}}/instances/{{name}}"
   value       = google_compute_instance.vm_instance.id
 }
 
 output "instance_id" {
-  description = "The server-assigned unique identifier of this instance."
+  description = "The server-assigned unique identifier of this instance. Example: 4567719474035761998"
   value       = google_compute_instance.vm_instance.instance_id
 }
+
+output "instance_name" {
+  description = "The generated name of the GCloud VM Instance with format {{instance-name}}-vm-{{suffix with 4 characters random string separated with -}}. Example: vm-instance-tf-1a2b"
+  value       = local.instance_name
+} 

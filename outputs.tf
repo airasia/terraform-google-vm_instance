@@ -9,8 +9,14 @@ output "sa_email" {
 }
 
 output "sa_roles" {
-  description = "All roles (except sensitive roles filtered by the module) that are attached to the ServiceAccount of this VM."
-  value       = module.service_account.roles
+  description = "All roles (except sensitive roles filtered by the module) that are attached to the ServiceAccount generated for this VM."
+  value = (
+    local.create_new_sa == true
+    ?
+    module.service_account.0.roles
+    :
+    ["No new ServiceAccount was generated for this VM. See roles attached to the ServiceAccount '${local.vm_sa_email}' instead."]
+  )
 }
 
 output "self_link" {
@@ -24,7 +30,7 @@ output "id" {
 }
 
 output "instance_id" {
-  description = "The server-assigned 19 digits unique identifier of this instance. Example: 4567719474035761998"
+  description = "The server-assigned unique identifier of this instance. Example: 4567719474035761998"
   value       = google_compute_instance.vm_instance.instance_id
 }
 

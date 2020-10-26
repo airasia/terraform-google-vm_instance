@@ -38,3 +38,4 @@ output "instance_name" {
   description = "The generated name of the GCloud VM Instance with format {{instance-name}}-vm-{{suffix with 4 characters random string separated with -}}. Example: vm-instance-tf-1a2b"
   value       = local.instance_name
 }
+

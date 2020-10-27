@@ -18,3 +18,24 @@ output "sa_roles" {
     ["No new ServiceAccount was generated for this VM. See roles attached to the ServiceAccount '${local.vm_sa_email}' instead."]
   )
 }
+
+output "self_link" {
+  description = "The URI of the created resource."
+  value       = google_compute_instance.vm_instance.self_link
+}
+
+output "id" {
+  description = "An identifier for the resource with format projects/{{project}}/zones/{{zone}}/instances/{{name}}"
+  value       = google_compute_instance.vm_instance.id
+}
+
+output "instance_id" {
+  description = "The server-assigned unique identifier of this instance. Example: 4567719474035761998"
+  value       = google_compute_instance.vm_instance.instance_id
+}
+
+output "instance_name" {
+  description = "The generated name of the GCloud VM Instance with format {{instance-name}}-vm-{{suffix with 4 characters random string separated with -}}. Example: vm-instance-tf-1a2b"
+  value       = local.instance_name
+}
+

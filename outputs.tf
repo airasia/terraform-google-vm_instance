@@ -35,6 +35,6 @@ output "instance_id" {
 }
 
 output "instance_name" {
-  description = "The generated name of the GCloud VM Instance with format {{instance-name}}-vm-{{suffix with 4 characters random string separated with -}}. Example: vm-instance-tf-1a2b"
+  description = "The generated name of the GCloud VM Instance. Example: myubuntu2010-vm-tfa2c4"
   value       = local.instance_name
 }

@@ -62,7 +62,7 @@ resource "google_compute_instance" "vm_instance" {
   metadata = {
     enable-oslogin = (var.os_login_enabled ? "TRUE" : "FALSE") # see https://cloud.google.com/compute/docs/instances/managing-instance-access#enable_oslogin
     windows-keys   = ""                                        # Placeholder to ignore changes. See https://www.terraform.io/docs/configuration/resources.html#ignore_changes
-    attached_disk  = null                                      # Placeholder to ignore changes for attached_disk. Null is not intended value here. See https://www.terraform.io/docs/configuration/resources.html#ignore_changes
+    attached_disk  = null                                      # Placeholder to ignore changes. See https://www.terraform.io/docs/configuration/resources.html#ignore_changes
   }
   service_account {
     email  = local.vm_sa_email
@@ -72,7 +72,7 @@ resource "google_compute_instance" "vm_instance" {
   depends_on                = [google_project_service.compute_api]
   lifecycle {
     ignore_changes = [
-      attached_disk, # this attached_disk is used to avoid any conflict b/w google_compute_attached_disk & google_compute_instance over the control of disk block.
+      attached_disk, # to avoid conflict between google_compute_attached_disk & google_compute_instance over the control of disk block
       metadata["windows-keys"],
     ]
   }

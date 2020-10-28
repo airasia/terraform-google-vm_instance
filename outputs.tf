@@ -1,3 +1,12 @@
+output "login_IAM_roles" {
+  description = "IAM role(s) that are necessary for logging in to the VM instance. See https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users."
+  value = [
+    "roles/compute.osLogin",
+    "roles/iam.serviceAccountUser",
+    "roles/iap.tunnelResourceAccessor",
+  ]
+}
+
 output "external_ip" {
   description = "The external IP address attached to the VM instance."
   value       = local.external_ip

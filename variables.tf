@@ -17,7 +17,7 @@ variable "instance_name" {
 }
 
 variable "boot_disk_image_source" {
-  description = "The source image to build the VM's boot disk from. Specified by path reference or by {{project}}/{{image-family}}."
+  description = "The source image to build the VM's boot disk from. Can be specified by the image's self_link, projects/{project}/global/images/{image}, projects/{project}/global/images/family/{family}, global/images/{image}, global/images/family/{family}, family/{family}, {project}/{family}, {project}/{image}, {family}, or {image}. Run 'gcloud compute images list' to get a list of compatible public images. Can also use custom image paths instead."
   type        = string
 }
 

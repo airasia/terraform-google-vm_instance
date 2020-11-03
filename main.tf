@@ -92,8 +92,10 @@ resource "google_service_account_iam_member" "login_role_service_account_user" {
   # see https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users
 }
 
-resource "google_project_iam_member" "login_role_compute_OS_login" {
+resource "google_compute_instance_iam_member" "login_role_compute_OS_login" {
   for_each = toset(var.user_groups)
+  instance_name = google_compute_instance.vm_instance.name
+  zone          = google_compute_instance.vm_instance.zone
   role     = "roles/compute.osLogin"
   member   = "group:${each.value}"
   # see https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users

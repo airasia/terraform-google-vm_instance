@@ -19,6 +19,7 @@ locals {
   sa_roles      = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
   create_new_sa = var.sa_email == "" ? true : false
   vm_sa_email   = local.create_new_sa ? module.service_account.0.email : var.sa_email
+  vm_sa_self_link = "projects/${data.google_client_config.google_client.project}/serviceAccounts/${local.vm_sa_email}"
 }
 
 resource "google_project_service" "compute_api" {
@@ -83,8 +84,9 @@ resource "google_project_iam_member" "login_role_iap_secured_tunnel_user" {
   member   = "group:${each.value}"
 }
 
-resource "google_project_iam_member" "login_role_service_account_user" {
+resource "google_service_account_iam_member" "login_role_service_account_user" {
   for_each = toset(var.user_groups)
+  service_account_id = local.vm_sa_self_link
   role     = "roles/iam.serviceAccountUser"
   member   = "group:${each.value}"
   # see https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users

@@ -107,3 +107,9 @@ variable "login_user_groups" {
   type        = list(string)
   default     = []
 }
+
+variable "login_service_accounts" {
+  description = "List of ServiceAccount emails that maybe allowed access to login to the VM instance. For example: SSH login from a remote CI/CD pipeline."
+  type        = list(string)
+  default     = []
+}

@@ -79,8 +79,9 @@ resource "google_compute_instance" "vm_instance" {
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
-# Grant IAM permissions to UserGroups to be able to ssh/login to the VM instance
+# Grant IAM permissions to UserGroups and ServiceAccounts to be able to ssh/login to the VM instance
 # ref: https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users
+# ref: https://cloud.google.com/compute/docs/tutorials/service-account-ssh
 # ----------------------------------------------------------------------------------------------------------------------
 
 resource "google_project_iam_member" "group_login_role_compute_viewer" {
@@ -113,3 +114,38 @@ resource "google_compute_instance_iam_member" "group_login_role_compute_OS_login
   role          = "roles/compute.osLogin"
   member        = "group:${each.value}"
 }
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+resource "google_compute_instance_iam_member" "sa_login_role_compute_OS_login" {
+  # to perform the OS login
+  for_each      = toset(var.login_service_accounts)
+  instance_name = google_compute_instance.vm_instance.name
+  zone          = google_compute_instance.vm_instance.zone
+  role          = "roles/compute.osLogin"
+  member        = "serviceAccount:${each.value}"
+}
+
+resource "google_project_iam_member" "sa_login_role_compute_viewer" {
+  # for project-wide permission of 'compute.projects.get' during OS login
+  for_each      = toset(var.login_service_accounts)
+  role          = "roles/compute.viewer"
+  member        = "serviceAccount:${each.value}"
+}
+
+resource "google_project_iam_member" "sa_login_role_iap_secured_tunnel_user" {
+  # to perform 'gcloud.beta.compute.start-iap-tunnel' during OS login
+  for_each = toset(var.login_service_accounts)
+  role     = "roles/iap.tunnelResourceAccessor"
+  member   = "serviceAccount:${each.value}"
+}
+
+resource "google_service_account_iam_member" "sa_login_role_service_account_user" {
+  # to avoid password-prompt upon OS login
+  for_each           = toset(var.login_service_accounts)
+  service_account_id = local.vm_sa_self_link
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${each.value}"
+}
+
+# ----------------------------------------------------------------------------------------------------------------------

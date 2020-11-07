@@ -78,21 +78,21 @@ resource "google_compute_instance" "vm_instance" {
 }
 
 resource "google_project_iam_member" "login_role_iap_secured_tunnel_user" {
-  count  = length(var.user_groups)
+  for_each  = toset(var.user_groups)
   role   = "roles/iap.tunnelResourceAccessor"
-  member = "group:${var.user_groups[count.index]}"
+  member = "group:${each.value}"
 }
 
 resource "google_project_iam_member" "login_role_service_account_user" {
-  count  = length(var.user_groups)
+  for_each  = toset(var.user_groups)
   role   = "roles/iam.serviceAccountUser"
-  member = "group:${var.user_groups[count.index]}"
+  member = "group:${each.value}"
   # see https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users
 }
 
 resource "google_project_iam_member" "login_role_compute_OS_login" {
-  count  = length(var.user_groups)
+  for_each  = toset(var.user_groups)
   role   = "roles/compute.osLogin"
-  member = "group:${var.user_groups[count.index]}"
+  member = "group:${each.value}"
   # see https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users
 }

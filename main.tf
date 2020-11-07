@@ -15,10 +15,10 @@ locals {
     "roles/monitoring.metricWriter",
     "roles/stackdriver.resourceMetadata.writer"
   ]
-  sa_name       = var.sa_name == "" ? var.instance_name : var.sa_name
-  sa_roles      = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
-  create_new_sa = var.sa_email == "" ? true : false
-  vm_sa_email   = local.create_new_sa ? module.service_account.0.email : var.sa_email
+  sa_name         = var.sa_name == "" ? var.instance_name : var.sa_name
+  sa_roles        = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
+  create_new_sa   = var.sa_email == "" ? true : false
+  vm_sa_email     = local.create_new_sa ? module.service_account.0.email : var.sa_email
   vm_sa_self_link = "projects/${data.google_client_config.google_client.project}/serviceAccounts/${local.vm_sa_email}"
 }
 
@@ -85,18 +85,18 @@ resource "google_project_iam_member" "group_login_role_iap_secured_tunnel_user" 
 }
 
 resource "google_service_account_iam_member" "group_login_role_service_account_user" {
-  for_each = toset(var.user_groups)
+  for_each           = toset(var.user_groups)
   service_account_id = local.vm_sa_self_link
-  role     = "roles/iam.serviceAccountUser"
-  member   = "group:${each.value}"
+  role               = "roles/iam.serviceAccountUser"
+  member             = "group:${each.value}"
   # see https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users
 }
 
 resource "google_compute_instance_iam_member" "group_login_role_compute_OS_login" {
-  for_each = toset(var.user_groups)
+  for_each      = toset(var.user_groups)
   instance_name = google_compute_instance.vm_instance.name
   zone          = google_compute_instance.vm_instance.zone
-  role     = "roles/compute.osLogin"
-  member   = "group:${each.value}"
+  role          = "roles/compute.osLogin"
+  member        = "group:${each.value}"
   # see https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users
 }

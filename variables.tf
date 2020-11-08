@@ -102,7 +102,7 @@ variable "sa_email" {
   default     = ""
 }
 
-variable "user_groups" {
+variable "login_user_groups" {
   description = "List of usergroup emails that maybe allowed access to login to the VM instance. For example: SSH login via CLoudSHell."
   type        = list(string)
   default     = []

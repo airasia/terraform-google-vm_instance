@@ -83,6 +83,8 @@ resource "google_compute_instance" "vm_instance" {
 # ref: https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users
 # ref: https://cloud.google.com/compute/docs/tutorials/service-account-ssh
 # ----------------------------------------------------------------------------------------------------------------------
+# UserGroups
+# ----------------------------------------------------------------------------------------------------------------------
 
 resource "google_project_iam_member" "group_login_role_compute_viewer" {
   # for project-wide permission of 'compute.projects.get' during OS login
@@ -115,6 +117,8 @@ resource "google_compute_instance_iam_member" "group_login_role_compute_OS_login
   member        = "group:${each.value}"
 }
 
+# ----------------------------------------------------------------------------------------------------------------------
+# ServiceAccounts
 # ----------------------------------------------------------------------------------------------------------------------
 
 resource "google_compute_instance_iam_member" "sa_login_role_compute_OS_login" {

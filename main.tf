@@ -78,6 +78,11 @@ resource "google_compute_instance" "vm_instance" {
   }
 }
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Grant IAM permissions to UserGroups to be able to ssh/login to the VM instance
+# ref: https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users
+# ----------------------------------------------------------------------------------------------------------------------
+
 resource "google_project_iam_member" "group_login_role_compute_viewer" {
   for_each      = toset(var.user_groups)
   role          = "roles/compute.viewer"
@@ -95,7 +100,6 @@ resource "google_service_account_iam_member" "group_login_role_service_account_u
   service_account_id = local.vm_sa_self_link
   role               = "roles/iam.serviceAccountUser"
   member             = "group:${each.value}"
-  # see https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users
 }
 
 resource "google_compute_instance_iam_member" "group_login_role_compute_OS_login" {
@@ -104,5 +108,4 @@ resource "google_compute_instance_iam_member" "group_login_role_compute_OS_login
   zone          = google_compute_instance.vm_instance.zone
   role          = "roles/compute.osLogin"
   member        = "group:${each.value}"
-  # see https://cloud.google.com/compute/docs/instances/managing-instance-access#configure_users
 }

@@ -95,9 +95,9 @@ resource "google_compute_instance_iam_member" "group_login_role_compute_OS_login
 }
 
 resource "google_project_iam_member" "group_login_role_compute_viewer" {
-  for_each      = toset(var.login_user_groups)
-  role          = "roles/compute.viewer" # for project-wide permission of 'compute.projects.get' during OS login
-  member        = "group:${each.value}"
+  for_each = toset(var.login_user_groups)
+  role     = "roles/compute.viewer" # for project-wide permission of 'compute.projects.get' during OS login
+  member   = "group:${each.value}"
 }
 
 resource "google_project_iam_member" "group_login_role_iap_secured_tunnel_user" {
@@ -126,9 +126,9 @@ resource "google_compute_instance_iam_member" "sa_login_role_compute_OS_login" {
 }
 
 resource "google_project_iam_member" "sa_login_role_compute_viewer" {
-  for_each      = toset(var.login_service_accounts)
-  role          = "roles/compute.viewer" # for project-wide permission of 'compute.projects.get' during OS login
-  member        = "serviceAccount:${each.value}"
+  for_each = toset(var.login_service_accounts)
+  role     = "roles/compute.viewer" # for project-wide permission of 'compute.projects.get' during OS login
+  member   = "serviceAccount:${each.value}"
 }
 
 resource "google_project_iam_member" "sa_login_role_iap_secured_tunnel_user" {

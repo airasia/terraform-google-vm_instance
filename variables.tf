@@ -42,7 +42,7 @@ variable "zone" {
   default     = "a"
 }
 
-variable "tags" {
+variable "network_tags" {
   description = "List of identifiable tags for the VM instance."
   type        = list(string)
   default     = []

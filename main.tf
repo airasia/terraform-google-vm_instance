@@ -81,7 +81,7 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
   metadata = {
-    enable-oslogin = (var.os_login_enabled ? "TRUE" : "FALSE") # see https://cloud.google.com/compute/docs/instances/managing-instance-access#enable_oslogin
+    enable-oslogin = (var.allow_login ? "TRUE" : "FALSE") # see https://cloud.google.com/compute/docs/instances/managing-instance-access#enable_oslogin
     windows-keys   = null                                      # Placeholder to ignore changes. See https://www.terraform.io/docs/configuration/resources.html#ignore_changes
   }
   service_account {
@@ -99,7 +99,7 @@ resource "google_compute_instance" "vm_instance" {
 }
 
 resource "google_compute_firewall" "login_to_vm" {
-  count         = var.os_login_enabled ? 1 : 0
+  count         = var.allow_login ? 1 : 0
   name          = local.vm_login_firewall_name
   network       = data.google_compute_subnetwork.vm_subnet.network
   source_ranges = [local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */]

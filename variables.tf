@@ -43,7 +43,7 @@ variable "zone" {
 }
 
 variable "network_tags" {
-  description = "List of identifiable tags for the VM instance."
+  description = "List of network tags for the VM instance. Setting this is permanent. Changing it later will require the VM to be destroyed and re-created."
   type        = list(string)
   default     = []
 }

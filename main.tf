@@ -30,10 +30,16 @@ resource "google_project_service" "compute_api" {
   disable_on_destroy = false
 }
 
+resource "google_project_service" "networking_api" {
+  service            = "servicenetworking.googleapis.com"
+  disable_on_destroy = false
+}
+
 resource "google_compute_address" "external_ip" {
   count  = var.create_external_ip ? 1 : 0
   name   = format("%s-vmip-%s", local.external_ip_name, var.name_suffix)
   region = data.google_client_config.google_client.region
+  depends_on = [google_project_service.networking_api]
 }
 
 module "service_account" {

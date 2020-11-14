@@ -49,7 +49,7 @@ variable "tags" {
 }
 
 variable "external_ip" {
-  description = "An external IP to be attached to the VM instance. VM is publicly unreachable if nothing is specified here."
+  description = "An existing external IP to be attached to the VM instance. VM will become publicly reachable if this is specified."
   type        = string
   default     = ""
 }

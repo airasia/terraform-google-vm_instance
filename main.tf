@@ -6,12 +6,12 @@ data "google_client_config" "google_client" {}
 
 locals {
   instance_name = format("%s-vm-%s", var.instance_name, var.name_suffix)
-  external_ip   = var.create_external_ip ? google_compute_address.external_ip.0.address : (
+  external_ip = var.create_external_ip ? google_compute_address.external_ip.0.address : (
     var.source_external_ip == "" ? null : var.source_external_ip
   )
   external_ip_name = var.external_ip_name == "" ? var.instance_name : var.external_ip_name
-  tags          = toset(concat(var.tags, [var.name_suffix]))
-  zone          = "${data.google_client_config.google_client.region}-${var.zone}"
+  tags             = toset(concat(var.tags, [var.name_suffix]))
+  zone             = "${data.google_client_config.google_client.region}-${var.zone}"
   pre_defined_sa_roles = [
     # enable the VM instance to write logs and metrics
     "roles/logging.logWriter",

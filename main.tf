@@ -10,7 +10,7 @@ locals {
     var.source_external_ip == "" ? null : var.source_external_ip
   )
   external_ip_name = var.external_ip_name == "" ? var.instance_name : var.external_ip_name
-  tags             = toset(concat(var.network_tags, [var.name_suffix]))
+  network_tags     = toset(var.network_tags)
   zone             = "${data.google_client_config.google_client.region}-${var.zone}"
   pre_defined_sa_roles = [
     # enable the VM instance to write logs and metrics
@@ -62,7 +62,7 @@ resource "google_compute_instance" "vm_instance" {
   name         = local.instance_name
   machine_type = var.machine_type
   zone         = local.zone
-  tags         = local.tags
+  tags         = toset(concat(tolist(local.network_tags), [var.name_suffix]))
   boot_disk {
     initialize_params {
       size  = var.boot_disk_size
@@ -103,7 +103,7 @@ resource "google_compute_firewall" "login_to_vm" {
   name          = local.vm_login_firewall_name
   network       = data.google_compute_subnetwork.vm_subnet.network
   source_ranges = [local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */]
-  target_tags   = var.network_tags
+  target_tags   = local.network_tags
   depends_on    = [google_compute_instance.vm_instance, google_project_service.networking_api]
   allow {
     protocol = "tcp"
@@ -118,7 +118,7 @@ resource "google_compute_firewall" "login_to_vm" {
 resource "google_compute_firewall" "vm_to_network" {
   name        = local.vm_egress_firewall_name
   network     = data.google_compute_subnetwork.vm_subnet.network
-  source_tags = var.network_tags
+  source_tags = local.network_tags
   depends_on  = [google_compute_instance.vm_instance, google_project_service.networking_api]
   allow { protocol = "icmp" }
   allow { protocol = "tcp" }

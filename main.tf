@@ -23,6 +23,11 @@ locals {
   create_new_sa   = var.sa_email == "" ? true : false
   vm_sa_email     = local.create_new_sa ? module.service_account.0.email : var.sa_email
   vm_sa_self_link = "projects/${data.google_client_config.google_client.project}/serviceAccounts/${local.vm_sa_email}"
+
+  # Firewall args
+  vm_login_firewall_name  = format("login-to-%s-%s", var.instance_name, var.name_suffix)
+  vm_egress_firewall_name = format("%s-to-network-%s", var.instance_name, var.name_suffix)
+  google_iap_cidr         = "35.235.240.0/20" # GCloud Identity Aware Proxy Netblock - https://cloud.google.com/iap/docs/using-tcp-forwarding#preparing_your_project_for_tcp_forwarding
 }
 
 resource "google_project_service" "compute_api" {
@@ -91,6 +96,38 @@ resource "google_compute_instance" "vm_instance" {
       metadata["windows-keys"],
     ]
   }
+}
+
+resource "google_compute_firewall" "login_to_vm" {
+  count         = var.os_login_enabled ? 1 : 0
+  name          = local.vm_login_firewall_name
+  network       = data.google_compute_subnetwork.vm_subnet.network
+  source_ranges = [local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */]
+  target_tags   = var.tags
+  depends_on    = [google_compute_instance.vm_instance, google_project_service.networking_api]
+  allow {
+    protocol = "tcp"
+    ports = [
+      # https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule
+      22,   # for SSH
+      3389, # for RDP
+    ]
+  }
+}
+
+resource "google_compute_firewall" "vm_to_network" {
+  name        = local.vm_egress_firewall_name
+  network     = data.google_compute_subnetwork.vm_subnet.network
+  source_tags = var.tags
+  depends_on  = [google_compute_instance.vm_instance, google_project_service.networking_api]
+  allow { protocol = "icmp" }
+  allow { protocol = "tcp" }
+  allow { protocol = "udp" }
+}
+
+data "google_compute_subnetwork" "vm_subnet" {
+  self_link = google_compute_instance.vm_instance.network_interface.0.subnetwork
+  region    = data.google_client_config.google_client.region
 }
 
 # ----------------------------------------------------------------------------------------------------------------------

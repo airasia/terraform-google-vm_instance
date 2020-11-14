@@ -67,7 +67,7 @@ variable "external_ip_name" {
 }
 
 variable "os_login_enabled" {
-  description = "Whether the \"OS Login\" feature will be allowed in the VM instance. CoreOS instances require \"allow_stopping_for_update\" to be \"true\" for the changes to take effect. See https://cloud.google.com/compute/docs/instances/managing-instance-access."
+  description = "Whether the \"OS Login\" feature will be allowed in the VM instance. CoreOS instances require \"allow_stopping_for_update\" to be \"true\" for the changes to take effect. See https://cloud.google.com/compute/docs/instances/managing-instance-access. Setting this to \"true\" also creates firewall rules which allow SSH / RDP access to the VM via IAP tunnelling. See https://cloud.google.com/iap/docs/using-tcp-forwarding"
   type        = bool
   default     = true
 }

@@ -101,10 +101,10 @@ resource "google_compute_instance" "vm_instance" {
 resource "google_compute_firewall" "login_to_vm" {
   count         = var.allow_login ? 1 : 0
   name          = local.vm_login_firewall_name
-  network       = data.google_compute_subnetwork.vm_subnet.network
+  network       = google_compute_instance.vm_instance.network_interface.0.network
   source_ranges = [local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */]
   target_tags   = local.network_tags
-  depends_on    = [google_compute_instance.vm_instance, google_project_service.networking_api]
+  depends_on    = [google_project_service.networking_api]
   allow {
     protocol = "tcp"
     ports = [
@@ -117,17 +117,12 @@ resource "google_compute_firewall" "login_to_vm" {
 
 resource "google_compute_firewall" "vm_to_network" {
   name        = local.vm_egress_firewall_name
-  network     = data.google_compute_subnetwork.vm_subnet.network
+  network     = google_compute_instance.vm_instance.network_interface.0.network
   source_tags = local.network_tags
-  depends_on  = [google_compute_instance.vm_instance, google_project_service.networking_api]
+  depends_on  = [google_project_service.networking_api]
   allow { protocol = "icmp" }
   allow { protocol = "tcp" }
   allow { protocol = "udp" }
-}
-
-data "google_compute_subnetwork" "vm_subnet" {
-  self_link = google_compute_instance.vm_instance.network_interface.0.subnetwork
-  region    = data.google_client_config.google_client.region
 }
 
 # ----------------------------------------------------------------------------------------------------------------------

@@ -26,6 +26,11 @@ variable "vpc_subnetwork" {
   type        = string
 }
 
+variable "network_tags" {
+  description = "List of network tags for the VM instance. Setting this is permanent. Changing it later will require the VM to be destroyed and re-created. Use empty array [] if you intend to not use any netowrk tags for this VM instance."
+  type        = list(string)
+}
+
 # ----------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # ----------------------------------------------------------------------------------------------------------------------
@@ -40,12 +45,6 @@ variable "zone" {
   description = "The GCloud zone-letter to launch the VM instance in. Options are \"a\" or \"b\" or \"c\" or \"d\". Defaults to \"a\" zone of the Google provider's region if nothing is specified here. See https://cloud.google.com/compute/docs/regions-zones."
   type        = string
   default     = "a"
-}
-
-variable "network_tags" {
-  description = "List of network tags for the VM instance. Setting this is permanent. Changing it later will require the VM to be destroyed and re-created."
-  type        = list(string)
-  default     = []
 }
 
 variable "source_external_ip" {

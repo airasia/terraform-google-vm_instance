@@ -49,7 +49,19 @@ variable "tags" {
 }
 
 variable "source_external_ip" {
-  description = "An existing external IP to be attached to the VM instance. VM will become publicly reachable if this is specified."
+  description = "An existing external IP to be attached to the VM instance. VM will become publicly reachable if this is specified. Gets disregarded if \"var.create_external_ip\" is set to \"true\"."
+  type        = string
+  default     = ""
+}
+
+variable "create_external_ip" {
+  description = "Whether to create a new external IP to be attached to the VM instance. VM will become publicly reachable if this is specified. Setting this to \"true\" will cause \"var.source_external_ip\" to be disregarded."
+  type        = bool
+  default     = false
+}
+
+variable "external_ip_name" {
+  description = "An arbitrary name to identify the External IP that will be generated & attached to the VM instance (if \"var.create_external_ip\" is set to \"true\"). Uses \"var.instance_name\" if nothing is specified here."
   type        = string
   default     = ""
 }

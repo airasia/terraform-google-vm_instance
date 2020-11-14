@@ -6,7 +6,10 @@ data "google_client_config" "google_client" {}
 
 locals {
   instance_name = format("%s-vm-%s", var.instance_name, var.name_suffix)
-  external_ip   = var.source_external_ip == "" ? null : var.source_external_ip
+  external_ip   = var.create_external_ip ? google_compute_address.external_ip.0.address : (
+    var.source_external_ip == "" ? null : var.source_external_ip
+  )
+  external_ip_name = var.external_ip_name == "" ? var.instance_name : var.external_ip_name
   tags          = toset(concat(var.tags, [var.name_suffix]))
   zone          = "${data.google_client_config.google_client.region}-${var.zone}"
   pre_defined_sa_roles = [
@@ -25,6 +28,12 @@ locals {
 resource "google_project_service" "compute_api" {
   service            = "compute.googleapis.com"
   disable_on_destroy = false
+}
+
+resource "google_compute_address" "external_ip" {
+  count  = var.create_external_ip ? 1 : 0
+  name   = format("%s-vmip-%s", local.external_ip_name, var.name_suffix)
+  region = data.google_client_config.google_client.region
 }
 
 module "service_account" {

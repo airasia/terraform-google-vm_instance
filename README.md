@@ -2,7 +2,7 @@ Terraform module for a Compute Engine VM Instance in GCP
 
 # Upgrade guide from v2.6.0 to v2.7.0
 
-First make sure you've planned & applied `v2.6.0`. Then, upon upgrading from `v2.6.0` to `v2.7.0`, you may (or may not) see a plan that destroys & creates an equal number of `*_iam_member` resources. It is OK to apply these changes as it only changes the IAM permissions from project-wide accesses to resource-specific accesses. Note that, after you plan & apply these changes, you may (or may not) get a **"Provider produced inconsistent result after apply"** error. Just re-plan and re-apply and that would resolve the error.
+First make sure you've planned & applied `v2.6.0`. Then, upon upgrading from `v2.6.0` to `v2.7.0`, you may (or may not) see a plan that destroys & creates `*_iam_member` resources. It is OK to apply these changes as it only changes the IAM permissions from project-wide accesses to resource-specific accesses. Note that, after you plan & apply these changes, you may (or may not) get a **"Provider produced inconsistent result after apply"** error. Just re-plan and re-apply and that would resolve the error.
 
 # Upgrade guide from v2.5.1 to v2.6.0
 

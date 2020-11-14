@@ -48,7 +48,7 @@ variable "tags" {
   default     = []
 }
 
-variable "external_ip" {
+variable "source_external_ip" {
   description = "An existing external IP to be attached to the VM instance. VM will become publicly reachable if this is specified."
   type        = string
   default     = ""

@@ -6,7 +6,7 @@ data "google_client_config" "google_client" {}
 
 locals {
   instance_name = format("%s-vm-%s", var.instance_name, var.name_suffix)
-  external_ip   = var.external_ip == "" ? null : var.external_ip
+  external_ip   = var.source_external_ip == "" ? null : var.source_external_ip
   tags          = toset(concat(var.tags, [var.name_suffix]))
   zone          = "${data.google_client_config.google_client.region}-${var.zone}"
   pre_defined_sa_roles = [

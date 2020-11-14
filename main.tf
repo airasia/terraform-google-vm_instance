@@ -82,7 +82,7 @@ resource "google_compute_instance" "vm_instance" {
   }
   metadata = {
     enable-oslogin = (var.allow_login ? "TRUE" : "FALSE") # see https://cloud.google.com/compute/docs/instances/managing-instance-access#enable_oslogin
-    windows-keys   = null                                      # Placeholder to ignore changes. See https://www.terraform.io/docs/configuration/resources.html#ignore_changes
+    windows-keys   = null                                 # Placeholder to ignore changes. See https://www.terraform.io/docs/configuration/resources.html#ignore_changes
   }
   service_account {
     email  = local.vm_sa_email

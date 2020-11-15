@@ -27,7 +27,7 @@ variable "vpc_subnetwork" {
 }
 
 variable "network_tags" {
-  description = "List of network tags for the VM instance. Setting this is permanent. Changing it later will require the VM to be destroyed and re-created. Use empty array [] if you intend to not use any netowrk tags for this VM instance."
+  description = "List of network tags for the VM instance. These tags are used for setting up firewall rules to & from the VM instance. Setting this is permanent. Changing it later will require the VM to be destroyed and re-created. Use empty array [] if you intend to not use any netowrk tags for this VM instance."
   type        = list(string)
 }
 

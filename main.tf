@@ -10,7 +10,7 @@ locals {
     var.source_external_ip == "" ? null : var.source_external_ip
   )
   external_ip_name = var.external_ip_name == "" ? var.instance_name : var.external_ip_name
-  network_tags     = toset(var.network_tags)
+  network_tags     = tolist(toset(var.network_tags))
   zone             = "${data.google_client_config.google_client.region}-${var.zone}"
   pre_defined_sa_roles = [
     # enable the VM instance to write logs and metrics
@@ -62,7 +62,7 @@ resource "google_compute_instance" "vm_instance" {
   name         = local.instance_name
   machine_type = var.machine_type
   zone         = local.zone
-  tags         = toset(concat(tolist(local.network_tags), [var.name_suffix]))
+  tags         = toset(concat(local.network_tags, [var.name_suffix]))
   boot_disk {
     initialize_params {
       size  = var.boot_disk_size

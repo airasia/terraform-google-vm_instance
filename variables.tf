@@ -114,13 +114,13 @@ variable "sa_email" {
 }
 
 variable "login_user_groups" {
-  description = "List of usergroup emails that maybe allowed access to login to the VM instance. For example: SSH login via CloudSHell."
+  description = "List of usergroup emails that maybe allowed access to login to the VM instance. For example: SSH login via CloudSHell Requires \"var.allow_login\" to be set to \"true\"."
   type        = list(string)
   default     = []
 }
 
 variable "login_service_accounts" {
-  description = "List of ServiceAccount emails that maybe allowed access to login to the VM instance. For example: SSH login from a remote CI/CD pipeline."
+  description = "List of ServiceAccount emails that maybe allowed access to login to the VM instance. For example: SSH login from a remote CI/CD pipeline. Requires \"var.allow_login\" to be set to \"true\"."
   type        = list(string)
   default     = []
 }

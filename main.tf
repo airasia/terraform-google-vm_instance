@@ -139,7 +139,7 @@ resource "google_compute_instance_iam_member" "group_login_role_compute_OS_login
   for_each      = var.allow_login ? toset(var.login_user_groups) : []
   instance_name = google_compute_instance.vm_instance.name
   zone          = google_compute_instance.vm_instance.zone
-  role          = "roles/compute.osLogin" # to be able to perform the actual OS login
+  role          = "roles/compute.osLogin" # to be able to login as standard user
   member        = "group:${each.value}"
 }
 

@@ -119,6 +119,12 @@ variable "login_user_groups" {
   default     = []
 }
 
+variable "login_admin_groups" {
+  description = "List of usergroup emails that maybe allowed root (superuser) (sudo) access to the VM instance. For example: SSH login via CloudSHell and then 'sudo su'. Requires \"var.allow_login\" to be set to \"true\"."
+  type        = list(string)
+  default     = []
+}
+
 variable "login_service_accounts" {
   description = "List of ServiceAccount emails that maybe allowed access to login to the VM instance. For example: SSH login from a remote CI/CD pipeline. Requires \"var.allow_login\" to be set to \"true\"."
   type        = list(string)

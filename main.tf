@@ -23,6 +23,7 @@ locals {
   create_new_sa   = var.sa_email == "" ? true : false
   vm_sa_email     = local.create_new_sa ? module.service_account.0.email : var.sa_email
   vm_sa_self_link = "projects/${data.google_client_config.google_client.project}/serviceAccounts/${local.vm_sa_email}"
+  all_user_groups = concat(var.login_user_groups, var.login_admin_groups)
 
   # Firewall args
   create_firewalls        = length(local.network_tags) > 0 ? true : false
@@ -135,28 +136,36 @@ resource "google_compute_firewall" "vm_to_network" {
 # UserGroups
 # ----------------------------------------------------------------------------------------------------------------------
 
-resource "google_compute_instance_iam_member" "group_login_role_compute_OS_login" {
-  for_each      = var.allow_login ? toset(var.login_user_groups) : []
+resource "google_compute_instance_iam_member" "group_login_role_compute_OS_admin_login" {
+  for_each      = var.allow_login ? toset(var.login_admin_groups) : []
   instance_name = google_compute_instance.vm_instance.name
   zone          = google_compute_instance.vm_instance.zone
-  role          = "roles/compute.osLogin" # to be able to perform the actual OS login
+  role          = "roles/compute.osAdminLogin" # to be able to login as root user
+  member        = "group:${each.value}"
+}
+
+resource "google_compute_instance_iam_member" "group_login_role_compute_OS_login" {
+  for_each      = var.allow_login ? toset(local.all_user_groups) : []
+  instance_name = google_compute_instance.vm_instance.name
+  zone          = google_compute_instance.vm_instance.zone
+  role          = "roles/compute.osLogin" # to be able to login as standard user
   member        = "group:${each.value}"
 }
 
 resource "google_project_iam_member" "group_login_role_compute_viewer" {
-  for_each = var.allow_login ? toset(var.login_user_groups) : []
+  for_each = var.allow_login ? toset(local.all_user_groups) : []
   role     = "roles/compute.viewer" # for project-wide permission of 'compute.projects.get' during OS login
   member   = "group:${each.value}"
 }
 
 resource "google_project_iam_member" "group_login_role_iap_secured_tunnel_user" {
-  for_each = var.allow_login ? toset(var.login_user_groups) : []
+  for_each = var.allow_login ? toset(local.all_user_groups) : []
   role     = "roles/iap.tunnelResourceAccessor" # to be able to 'gcloud.beta.compute.start-iap-tunnel' during OS login
   member   = "group:${each.value}"
 }
 
 resource "google_service_account_iam_member" "group_login_role_service_account_user" {
-  for_each           = var.allow_login ? toset(var.login_user_groups) : []
+  for_each           = var.allow_login ? toset(local.all_user_groups) : []
   service_account_id = local.vm_sa_self_link
   role               = "roles/iam.serviceAccountUser" # to avoid password-prompt upon OS login
   member             = "group:${each.value}"

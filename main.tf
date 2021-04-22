@@ -27,8 +27,8 @@ locals {
 
   # Firewall args
   create_firewalls        = length(local.network_tags) > 0 ? true : false
-  vm_login_firewall_name  = format("login-to-%s-%s", var.instance_name, var.name_suffix)
-  vm_egress_firewall_name = format("%s-to-network-%s", var.instance_name, var.name_suffix)
+  vm_login_firewall_name  = format("login-to-%s-%s", local.instance_name, var.name_suffix)
+  vm_egress_firewall_name = format("%s-to-network-%s", local.instance_name, var.name_suffix)
   google_iap_cidr         = "35.235.240.0/20" # GCloud Identity Aware Proxy Netblock - https://cloud.google.com/iap/docs/using-tcp-forwarding#preparing_your_project_for_tcp_forwarding
 }
 

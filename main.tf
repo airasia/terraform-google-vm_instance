@@ -5,7 +5,7 @@ terraform {
 data "google_client_config" "google_client" {}
 
 locals {
-  instance_name = format("%s-vm-%s", var.instance_name, var.name_suffix)
+  instance_name = format("%s-vm", var.instance_name)
   external_ip = var.create_external_ip ? google_compute_address.external_ip.0.address : (
     var.source_external_ip == "" ? null : var.source_external_ip
   )
@@ -61,7 +61,7 @@ module "service_account" {
 }
 
 resource "google_compute_instance" "vm_instance" {
-  name         = local.instance_name
+  name         = format("%s-%s", local.instance_name, var.name_suffix)
   machine_type = var.machine_type
   zone         = local.zone
   tags         = toset(concat(local.network_tags, [var.name_suffix]))

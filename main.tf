@@ -20,7 +20,7 @@ locals {
   ]
   sa_name         = coalesce(var.sa_name, var.instance_name)
   sa_roles        = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
-  create_new_sa   = var.sa_email == "" ? true : false
+  create_new_sa   = var.sa_email == ""
   vm_sa_email     = local.create_new_sa ? module.service_account.0.email : var.sa_email
   vm_sa_self_link = "projects/${data.google_client_config.google_client.project}/serviceAccounts/${local.vm_sa_email}"
   all_user_groups = concat(var.login_user_groups, var.login_admin_groups)

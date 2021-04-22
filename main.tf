@@ -9,7 +9,7 @@ locals {
   external_ip = var.create_external_ip ? google_compute_address.external_ip.0.address : (
     var.source_external_ip == "" ? null : var.source_external_ip
   )
-  external_ip_name = coalesce(var.external_ip_name, var.instance_name)
+  external_ip_name = coalesce(var.external_ip_name, "${var.instance_name}-vmip")
   network_tags     = tolist(toset(var.network_tags))
   zone             = "${data.google_client_config.google_client.region}-${var.zone}"
   pre_defined_sa_roles = [
@@ -44,7 +44,7 @@ resource "google_project_service" "networking_api" {
 
 resource "google_compute_address" "external_ip" {
   count      = var.create_external_ip ? 1 : 0
-  name       = format("%s-vmip-%s", local.external_ip_name, var.name_suffix)
+  name       = format("%s-%s", local.external_ip_name, var.name_suffix)
   region     = data.google_client_config.google_client.region
   depends_on = [google_project_service.networking_api]
 }

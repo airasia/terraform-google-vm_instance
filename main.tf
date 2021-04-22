@@ -9,7 +9,7 @@ locals {
   external_ip = var.create_external_ip ? google_compute_address.external_ip.0.address : (
     var.source_external_ip == "" ? null : var.source_external_ip
   )
-  external_ip_name = var.external_ip_name == "" ? var.instance_name : var.external_ip_name
+  external_ip_name = coalesce(var.external_ip_name, var.instance_name)
   network_tags     = tolist(toset(var.network_tags))
   zone             = "${data.google_client_config.google_client.region}-${var.zone}"
   pre_defined_sa_roles = [
@@ -18,7 +18,7 @@ locals {
     "roles/monitoring.metricWriter",
     "roles/stackdriver.resourceMetadata.writer"
   ]
-  sa_name         = var.sa_name == "" ? var.instance_name : var.sa_name
+  sa_name         = coalesce(var.sa_name, var.instance_name)
   sa_roles        = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
   create_new_sa   = var.sa_email == "" ? true : false
   vm_sa_email     = local.create_new_sa ? module.service_account.0.email : var.sa_email

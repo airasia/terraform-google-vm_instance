@@ -37,7 +37,7 @@ output "instance_id" {
 
 output "instance_name" {
   description = "The generated name of the GCloud VM Instance. Example: myubuntu2010-vm-tfa2c4"
-  value       = local.instance_name
+  value       = format("%s-%s", local.instance_name, var.name_suffix)
 }
 
 output "zone" {

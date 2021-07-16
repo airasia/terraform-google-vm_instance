@@ -29,6 +29,7 @@ locals {
   create_firewalls        = length(local.network_tags) > 0 ? true : false
   vm_login_firewall_name  = format("login-to-%s-%s", local.instance_name, var.name_suffix)
   vm_egress_firewall_name = format("%s-to-network-%s", local.instance_name, var.name_suffix)
+  google_iap_cidr         = "35.235.240.0/20" # GCloud Identity Aware Proxy Netblock - https://cloud.google.com/iap/docs/using-tcp-forwarding#preparing_your_project_for_tcp_forwarding
 }
 
 resource "google_project_service" "compute_api" {
@@ -103,12 +104,12 @@ resource "google_compute_firewall" "login_to_vm" {
   count         = (local.create_firewalls && var.allow_login) ? 1 : 0
   name          = local.vm_login_firewall_name
   network       = google_compute_instance.vm_instance.network_interface.0.network
-  source_ranges = distinct(var.fw_allowed_cidrs)
+  source_ranges = concat([local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */], distinct(var.fw_allowed_cidrs))
   target_tags   = local.network_tags
   depends_on    = [google_project_service.networking_api]
   allow {
     protocol = "tcp"
-    ports    = distinct(var.fw_allowed_ports)
+    ports    = concat(["22", "3389"], distinct(var.fw_allowed_ports))
   }
 }
 

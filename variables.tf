@@ -130,3 +130,15 @@ variable "login_service_accounts" {
   type        = list(string)
   default     = []
 }
+
+variable "fw_allowed_cidrs" {
+  description = "List of source IP address of particular range to which the firewall rule will apply. These ranges must be expressed in CIDR format."
+  type        = list(string)
+  default     = ["35.235.240.0/20"]
+}
+
+variable "fw_allowed_ports" {
+  description = "List of ports to which this rule applies."
+  type        = list(string)
+  default     = ["22", "3389"]
+}

@@ -138,7 +138,7 @@ variable "fw_allowed_cidrs" {
 }
 
 variable "fw_allowed_ports" {
-  description = "List of ports to which this rule applies."
+  description = "List of ports to be opened by the VM firewall rules for incoming traffics to connect to."
   type        = list(string)
   default     = ["22", "3389"]
 }

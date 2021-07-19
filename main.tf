@@ -106,19 +106,19 @@ resource "google_compute_firewall" "login_to_vm" {
   network     = google_compute_instance.vm_instance.network_interface.0.network
   target_tags = local.network_tags
   source_ranges = distinct(concat(
-      [local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */],
-      var.fw_allowed_cidrs
+    [local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */],
+    var.fw_allowed_cidrs
   ))
   depends_on = [google_project_service.networking_api]
   allow {
     protocol = "tcp"
     ports = distinct(concat(
-        [
-          # https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule
-          22,   # for SSH
-          3389, # for RDP
-        ],
-        var.fw_allowed_ports
+      # https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule
+      [
+        22,   # for SSH
+        3389, # for RDP
+      ],
+      var.fw_allowed_ports
     ))
   }
 }

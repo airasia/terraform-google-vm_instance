@@ -132,7 +132,7 @@ variable "login_service_accounts" {
 }
 
 variable "fw_allowed_cidrs" {
-  description = "List of IP CIDRs to be allowed  by the VM firewall rules for incoming traffic."
+  description = "List of IP CIDRs to be allowed by the VM firewall rules for incoming traffic."
   type        = list(string)
   default     = []
 }

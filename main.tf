@@ -101,15 +101,28 @@ resource "google_compute_instance" "vm_instance" {
 }
 
 resource "google_compute_firewall" "login_to_vm" {
-  count         = (local.create_firewalls && var.allow_login) ? 1 : 0
-  name          = local.vm_login_firewall_name
-  network       = google_compute_instance.vm_instance.network_interface.0.network
-  source_ranges = concat([local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */], distinct(var.fw_allowed_cidrs))
-  target_tags   = local.network_tags
-  depends_on    = [google_project_service.networking_api]
+  count       = (local.create_firewalls && var.allow_login) ? 1 : 0
+  name        = local.vm_login_firewall_name
+  network     = google_compute_instance.vm_instance.network_interface.0.network
+  target_tags = local.network_tags
+  source_ranges = distinct(
+    concat(
+      [
+        local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */
+      ],
+      (var.fw_allowed_cidrs)
+  ))
+  depends_on = [google_project_service.networking_api]
   allow {
     protocol = "tcp"
-    ports    = concat(["22", "3389"], distinct(var.fw_allowed_ports))
+    ports = distinct(
+      concat(
+        [
+          "22",  # ssh
+          "3389" # rdp
+        ],
+        (var.fw_allowed_ports)
+    ))
   }
 }
 

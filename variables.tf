@@ -130,3 +130,15 @@ variable "login_service_accounts" {
   type        = list(string)
   default     = []
 }
+
+variable "fw_allowed_cidrs" {
+  description = "List of IP CIDRs to be allowed by the VM firewall rules for incoming traffic."
+  type        = list(string)
+  default     = []
+}
+
+variable "fw_allowed_ports" {
+  description = "List of ports to be opened by the VM firewall rules for incoming traffics to connect to."
+  type        = list(string)
+  default     = []
+}

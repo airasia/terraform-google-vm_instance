@@ -101,19 +101,25 @@ resource "google_compute_instance" "vm_instance" {
 }
 
 resource "google_compute_firewall" "login_to_vm" {
-  count         = (local.create_firewalls && var.allow_login) ? 1 : 0
-  name          = local.vm_login_firewall_name
-  network       = google_compute_instance.vm_instance.network_interface.0.network
-  source_ranges = [local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */]
-  target_tags   = local.network_tags
-  depends_on    = [google_project_service.networking_api]
+  count       = (local.create_firewalls && var.allow_login) ? 1 : 0
+  name        = local.vm_login_firewall_name
+  network     = google_compute_instance.vm_instance.network_interface.0.network
+  target_tags = local.network_tags
+  source_ranges = distinct(concat(
+    [local.google_iap_cidr /* see https://stackoverflow.com/a/57024714/636762 */],
+    var.fw_allowed_cidrs
+  ))
+  depends_on = [google_project_service.networking_api]
   allow {
     protocol = "tcp"
-    ports = [
+    ports = distinct(concat(
       # https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule
-      22,   # for SSH
-      3389, # for RDP
-    ]
+      [
+        22,   # for SSH
+        3389, # for RDP
+      ],
+      var.fw_allowed_ports
+    ))
   }
 }
 

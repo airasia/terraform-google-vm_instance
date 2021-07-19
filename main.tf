@@ -29,7 +29,7 @@ locals {
   create_firewalls        = length(local.network_tags) > 0 ? true : false
   vm_login_firewall_name  = format("login-to-%s-%s", local.instance_name, var.name_suffix)
   vm_egress_firewall_name = format("%s-to-network-%s", local.instance_name, var.name_suffix)
-  google_iap_cidr         = "35.235.240.0/20" # GCloud Identity Aware Proxy Netblock - https://cloud.google.com/iap/docs/using-tcp-forwarding#preparing_your_project_for_tcp_forwarding
+  google_iap_cidr         = "35.235.240.0/20" # IAP netblock - https://cloud.google.com/iap/docs/using-tcp-forwarding
 }
 
 resource "google_project_service" "compute_api" {
@@ -105,13 +105,10 @@ resource "google_compute_firewall" "login_to_vm" {
   name        = local.vm_login_firewall_name
   network     = google_compute_instance.vm_instance.network_interface.0.network
   target_tags = local.network_tags
-  source_ranges = distinct(concat(var.fw_allowed_cidrs, [
-    local.google_iap_cidr # see https://stackoverflow.com/a/57024714/636762
-  ]))
+  source_ranges = distinct(concat(var.fw_allowed_cidrs, [local.google_iap_cidr]))
   allow {
     protocol = "tcp"
     ports = distinct(concat(var.fw_allowed_ports, [
-      # https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule
       22,   # for SSH
       3389, # for RDP
     ]))

@@ -101,10 +101,10 @@ resource "google_compute_instance" "vm_instance" {
 }
 
 resource "google_compute_firewall" "login_to_vm" {
-  count       = (local.create_firewalls && var.allow_login) ? 1 : 0
-  name        = local.vm_login_firewall_name
-  network     = google_compute_instance.vm_instance.network_interface.0.network
-  target_tags = local.network_tags
+  count         = (local.create_firewalls && var.allow_login) ? 1 : 0
+  name          = local.vm_login_firewall_name
+  network       = google_compute_instance.vm_instance.network_interface.0.network
+  target_tags   = local.network_tags
   source_ranges = distinct(concat(var.fw_allowed_cidrs, [local.google_iap_cidr]))
   allow {
     protocol = "tcp"
@@ -153,12 +153,14 @@ resource "google_compute_instance_iam_member" "group_login_role_compute_OS_login
 
 resource "google_project_iam_member" "group_login_role_compute_viewer" {
   for_each = var.allow_login ? toset(local.all_user_groups) : []
+  project  = data.google_client_config.google_client.project
   role     = "roles/compute.viewer" # for project-wide permission of 'compute.projects.get' during OS login
   member   = "group:${each.value}"
 }
 
 resource "google_project_iam_member" "group_login_role_iap_secured_tunnel_user" {
   for_each = var.allow_login ? toset(local.all_user_groups) : []
+  project  = data.google_client_config.google_client.project
   role     = "roles/iap.tunnelResourceAccessor" # to be able to 'gcloud.beta.compute.start-iap-tunnel' during OS login
   member   = "group:${each.value}"
 }
@@ -184,12 +186,14 @@ resource "google_compute_instance_iam_member" "sa_login_role_compute_OS_login" {
 
 resource "google_project_iam_member" "sa_login_role_compute_viewer" {
   for_each = var.allow_login ? toset(var.login_service_accounts) : []
+  project  = data.google_client_config.google_client.project
   role     = "roles/compute.viewer" # for project-wide permission of 'compute.projects.get' during OS login
   member   = "serviceAccount:${each.value}"
 }
 
 resource "google_project_iam_member" "sa_login_role_iap_secured_tunnel_user" {
   for_each = var.allow_login ? toset(var.login_service_accounts) : []
+  project  = data.google_client_config.google_client.project
   role     = "roles/iap.tunnelResourceAccessor" # to be able to 'gcloud.beta.compute.start-iap-tunnel' during OS login
   member   = "serviceAccount:${each.value}"
 }

@@ -52,7 +52,7 @@ resource "google_compute_address" "external_ip" {
 module "service_account" {
   count        = local.create_new_sa ? 1 : 0
   source       = "airasia/service_account/google"
-  version      = "2.0.1"
+  version      = "2.2.0"
   name_suffix  = var.name_suffix
   name         = local.sa_name
   display_name = local.sa_name
